@@ -1,0 +1,24 @@
+{
+  "name": "social_media",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "sequelize db:migrate:undo:all && sequelize db:migrate && sequelize db:seed:all"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "express-mysql-session": "^2.0.1",
+    "express-session": "^1.15.6",
+    "express-validator": "^5.3.0",
+    "mailsender": "^1.1.2",
+    "mysql2": "^1.6.1",
+    "sequelize": "^4.39.0",
+    "sequelize-cli": "^4.1.1",
+    "speakeasy": "^2.0.0",
+    "winston": "^3.1.0"
+  }
+}
