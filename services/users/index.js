@@ -19,13 +19,14 @@ module.exports = {
   sendPasswordResetEmail,
   getPasswordResetEmailHash,
   initTotpChange,
-  sendTotpResetEmail
+  sendTotpResetEmail,
+  createNewToken
 };
 
 const sessionProperties = ['id', 'email'];
 const {EMAIL_SECRET, WEB_APP_BASE_URL, PASS_CHANGE_PATH, TOTP_CHANGE_PATH} = process.env;
 
-async function register (context, request, password, totpSecret) {
+async function register (request, password) {
   try {
     await db.sequelize.transaction(async t => {
       const User = await db.User.create(request, {transaction: t});
@@ -38,7 +39,6 @@ async function register (context, request, password, totpSecret) {
 
       await Promise.all([
         db.UserAuth.create({'user_id': User.id, 'hash': hash}, {transaction: t}),
-        db.UserTotp.create({'user_id': User.id, 'secret': totpSecret}, {transaction: t}),
         sendConfirmationEmail(request.email, request)
       ]);
 
@@ -224,4 +224,35 @@ async function getUserWithTotp (id, attributes = undefined) {
     }]
   });
   return user;
+}
+
+async function createNewToken (accessToken, userId, networkId) {
+  try {
+    const resp = await db.AccessToken.findOrCreate({
+      where: {
+        user_id: userId,
+        social_network_id: networkId
+      },
+      defaults: {
+        access_token: accessToken
+      }
+    });
+
+    if (!resp[1]) {
+      await db.AccessToken.update({
+        user_id: userId,
+        access_token: accessToken,
+        social_network_id: networkId
+      }, {
+        where: {
+          id: resp[0].get('id')
+        }
+      });
+    }
+
+    return true;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 }

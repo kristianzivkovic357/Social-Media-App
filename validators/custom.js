@@ -3,6 +3,7 @@
 const userServices = require('../services/users');
 const totp = require('../services/totp');
 const authServices = require('../services/auth');
+const enums = require('../utils/enums');
 
 module.exports = {
   isEqual,
@@ -14,7 +15,8 @@ module.exports = {
   checkPasswordChangeHash,
   totpCheckPassword,
   checkTotpChangeHash,
-  checkReplyId
+  checkReplyId,
+  checkNetwork
 };
 
 const digitsRegexp = new RegExp('[0-9]');
@@ -109,6 +111,12 @@ async function checkTotpChangeHash (hash, {req}) {
 
 async function checkReplyId (id) {
   if (!(id === 'null' || digitsRegexp.test(id))) {
+    throw new Error();
+  }
+}
+
+async function checkNetwork (val) {
+  if (!enums.SocialNetwork[val]) {
     throw new Error();
   }
 }

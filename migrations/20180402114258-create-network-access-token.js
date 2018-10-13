@@ -2,25 +2,33 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('user_totp', {
+    return queryInterface.createTable('user_access_token', {
       id: {
         type: Sequelize.BIGINT.UNSIGNED,
         autoIncrement: true,
         primaryKey: true
       },
-      secret: {
-        type: Sequelize.STRING(512),
-        allowNull: false
-      },
       user_id: {
         type: Sequelize.BIGINT.UNSIGNED,
-        allowNull: false,
         references: {
           model: 'user',
           key: 'id'
         }
       },
+      access_token: {
+        type: Sequelize.STRING(64),
+        allowNull: false
+      },
+      social_network_id: {
+        type: Sequelize.BIGINT.UNSIGNED,
+        allowNull: false,
+        references: {
+          model: 'social_network',
+          key: 'id'
+        }
+      },
       created_at: {
+
         allowNull: false,
         type: Sequelize.DATE
       },
@@ -31,6 +39,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('user_totp');
+    return queryInterface.dropTable('user_access_token');
   }
 };

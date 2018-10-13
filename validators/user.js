@@ -53,11 +53,6 @@ const register = [
     .trim()
     .not().isEmpty().withMessage(vk('ln_req'))
     .isLength({ max: 64 }).withMessage(vk('ln_long')),
-  body('secret')
-    .trim()
-    .not().isEmpty().withMessage(vk('token_secret'))
-    .isLength({ max: 64 }).withMessage(vk('token_secret'))
-
 ];
 
 const register2 = validateTotpToken('token', 'secret');
@@ -138,6 +133,14 @@ const totpChangeForgotten = [
     .custom(custom.checkTotpChangeHash).withMessage(vk('invalid_hash'))
 ];
 
+const accessKey = [
+  body('code')
+    .not().isEmpty().withMessage(vk('code_req')),
+  body('network')
+    .not().isEmpty().withMessage(vk('pass_req'))
+    .custom(custom.checkNetwork)
+];
+
 module.exports = {
   register,
   login,
@@ -148,5 +151,6 @@ module.exports = {
   login1,
   passChangeForgotten,
   validateTotpToken,
-  totpChangeForgotten
+  totpChangeForgotten,
+  accessKey
 };

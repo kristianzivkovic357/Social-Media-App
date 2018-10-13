@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = function (models) {
     models.User.hasOne(models.UserAuth, { foreignKey: { allowNull: false } });
-    models.User.hasOne(models.UserTotp, { foreignKey: { allowNull: false } });
+    models.User.hasMany(models.AccessToken, { foreignKey: { allowNull: false } });
   };
 
   return User;

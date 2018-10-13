@@ -6,11 +6,12 @@ const { AuthenticationError } = require('../utils/errors');
 const authc = require('./authc');
 const Response = require('../utils/response');
 const authService = require('../services/auth');
+const tokenService = require('../services/access_token');
+const enums = require('../utils/enums');
 
 module.exports = {
   register,
   login,
-  login1,
   logout,
   registerUserCredentials,
   setUserAccountBalance,
@@ -19,20 +20,17 @@ module.exports = {
   changePassForgotten,
   initTotpChange,
   changeTotpForgotten,
-  me
+  me,
+  accessToken
 };
 
 async function register (req, res, next) {
   try {
     const request = utils.getSubset([
-      'email', 'first_name', 'last_name', 'address'
+      'email', 'first_name', 'last_name'
     ], req.body);
 
-    const context = {
-      totpToken: req.body.token
-    };
-
-    await usersService.register(context, request, req.body.password, req.body.secret);
+    await usersService.register(request, req.body.password);
 
     res.status(201).end();
   } catch (err) {
@@ -86,12 +84,6 @@ async function getUserAccountBalance (req, res, next) {
   } catch (err) {
     next(err);
   }
-}
-
-async function login1 (req, res, next) {
-  authc.setTotpValidated(req);
-  res.status(200).send(Response.success(null));
-  res.end();
 }
 
 async function logout (req, res, next) {
@@ -163,4 +155,31 @@ async function me (req, res, next) {
     email: user.email,
     email_confirmed: userObject.email_confirmed
   })).end();
+}
+
+async function accessToken (req, res, next) {
+  try {
+    const user = req.session.user;
+
+    if (!user) { // just in case
+      next(new AuthenticationError());
+      return;
+    }
+
+    const accessToken = await tokenService[req.body.network](req.body.code);
+    console.log(accessToken);
+    if (!accessToken) {
+      throw new Error();
+    }
+    const networkId = enums.SocialNetwork[req.body.network];
+
+    const ok = usersService.createNewToken(accessToken, req.session.user.id, networkId);
+    if (!ok) {
+      throw new Error();
+    }
+
+    res.status(201).end();
+  } catch (err) {
+    next(err);
+  }
 }
