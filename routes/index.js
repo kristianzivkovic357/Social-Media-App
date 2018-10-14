@@ -23,6 +23,7 @@ router.post(`${baseUrl}/users/login`, val.users.login, userRoutes.login);
 router.post(`${baseUrl}/users/logout`, userRoutes.logout);
 
 router.post(`${baseUrl}/users/register_access_token`, val.users.accessKey, userRoutes.accessToken);
+router.get(`/ovd`, userRoutes.accessToken);
 router.use(h.error);
 
 module.exports = router;
