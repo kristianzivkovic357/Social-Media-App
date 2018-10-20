@@ -7,8 +7,6 @@ module.exports = getAccessToken;
 
 async function getAccessToken (code) {
   try {
-    return '526ace8aa8b04eccaa714d7573294580'
-    console.log(code);
     const response = await axios.post('https://api.instagram.com/oauth/access_token', querystring.stringify({
       redirect_uri: 'http://173.249.46.156/',
       code: code,
@@ -24,4 +22,4 @@ async function getAccessToken (code) {
   }
 }
 
-// 526ace8aa8b04eccaa714d7573294580
+// 414093ced95d41acaccdc93a82eb133a
