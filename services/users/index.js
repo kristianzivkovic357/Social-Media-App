@@ -9,6 +9,7 @@ const emailSender = require('../email');
 const config = require('../../config');
 const url = require('url');
 const querystring = require('querystring');
+const enums = require('../../utils/enums');
 
 module.exports = {
   register,
@@ -20,7 +21,8 @@ module.exports = {
   getPasswordResetEmailHash,
   initTotpChange,
   sendTotpResetEmail,
-  createNewToken
+  createNewToken,
+  getPosts
 };
 
 const sessionProperties = ['id', 'email'];
@@ -255,4 +257,20 @@ async function createNewToken (accessToken, userId, networkId) {
     console.log(err);
     return null;
   }
+}
+
+async function getPosts (userId, networkName) {
+  const query = {
+    user_id: userId
+  };
+
+  if (networkName) {
+    query.social_network_id = enums.SocialNetwork[networkName];
+  }
+
+  const posts = await db.Post.findAndCountAll({
+    where: query
+  });
+
+  return posts;
 }
