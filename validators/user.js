@@ -141,6 +141,10 @@ const accessKey = [
     .custom(custom.checkNetwork)
 ];
 
+const getPosts = [
+  idParamValidation()
+];
+
 module.exports = {
   register,
   login,
@@ -152,5 +156,6 @@ module.exports = {
   passChangeForgotten,
   validateTotpToken,
   totpChangeForgotten,
-  accessKey
+  accessKey,
+  getPosts
 };

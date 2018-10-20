@@ -21,7 +21,8 @@ module.exports = {
   initTotpChange,
   changeTotpForgotten,
   me,
-  accessToken
+  accessToken,
+  getPosts
 };
 
 async function register (req, res, next) {
@@ -167,10 +168,10 @@ async function accessToken (req, res, next) {
     }
 
     const accessToken = await tokenService[req.body.network](req.body.code);
-    console.log(accessToken);
     if (!accessToken) {
       throw new Error();
     }
+
     const networkId = enums.SocialNetwork[req.body.network];
 
     const ok = usersService.createNewToken(accessToken, req.session.user.id, networkId);
@@ -179,6 +180,19 @@ async function accessToken (req, res, next) {
     }
 
     res.status(201).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getPosts (req, res, next) {
+  try {
+    const userId = req.params.id;
+    const networkName = req.query.networkName;
+
+    const posts = await usersService.getPosts(userId, networkName);
+
+    res.send(Response.success(posts)).end();
   } catch (err) {
     next(err);
   }

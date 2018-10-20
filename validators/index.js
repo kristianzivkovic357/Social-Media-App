@@ -1,7 +1,6 @@
 'use strict';
 
 const { validationResult } = require('express-validator/check');
-const { matchedData } = require('express-validator/filter');
 const { ValidationError } = require('../utils/errors');
 const user = require('./user');
 
@@ -21,8 +20,6 @@ function validationError (req, res, next) {
   if (!errors.isEmpty()) {
     next(new ValidationError(errors.mapped()));
   } else {
-    req.query = matchedData(req, {locations: ['query']});
-    req.body = matchedData(req, {locations: ['body']});
     next();
   }
 }

@@ -24,6 +24,14 @@ module.exports = {
           key: 'id'
         }
       },
+      user_id: {
+        type: Sequelize.BIGINT.UNSIGNED,
+        allowNull: false,
+        references: {
+          model: 'user',
+          key: 'id'
+        }
+      },
       access_token_id: {
         type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false,

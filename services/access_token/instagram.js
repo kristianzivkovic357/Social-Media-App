@@ -21,5 +21,3 @@ async function getAccessToken (code) {
     return null;
   }
 }
-
-// 414093ced95d41acaccdc93a82eb133a
