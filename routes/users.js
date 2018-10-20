@@ -167,7 +167,6 @@ async function accessToken (req, res, next) {
       return;
     }
 
-<<<<<<< HEAD
     let networkId;
     let accessToken;
 
@@ -183,14 +182,6 @@ async function accessToken (req, res, next) {
     if (!accessToken) {
       throw new Error();
     }
-=======
-    const accessToken = await tokenService[req.body.network](req.body.code);
-    if (!accessToken) {
-      throw new Error();
-    }
-
-    const networkId = enums.SocialNetwork[req.body.network];
->>>>>>> Added get posts method and added user_id to post table.
 
     const ok = usersService.createNewToken(accessToken, req.session.user.id, networkId);
     if (!ok) {
