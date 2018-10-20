@@ -16,7 +16,7 @@ module.exports = {
         }
       },
       access_token: {
-        type: Sequelize.STRING(64),
+        type: Sequelize.STRING(256),
         allowNull: false
       },
       social_network_id: {

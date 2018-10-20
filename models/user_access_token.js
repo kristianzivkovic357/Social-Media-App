@@ -9,15 +9,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     user_id: {
       type: DataTypes.BIGINT.UNSIGNED,
-      references: {
-        model: 'user',
-        key: 'id'
-      }
+      allowNull: false
     },
     access_token: {
-      type: DataTypes.STRING(64),
+      type: DataTypes.STRING(256),
       allowNull: false
     }
+
   }, {
     underscored: true,
     freezeTableName: true,
@@ -26,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
 
   AccessToken.associate = function (models) {
     models.AccessToken.belongsTo(models.User, { foreignKey: { allowNull: false } });
+    models.AccessToken.hasMany(models.Post, { foreignKey: { allowNull: false } });
     models.AccessToken.belongsTo(models.SocialNetwork, { foreignKey: { allowNull: false } });
   };
 

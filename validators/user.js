@@ -52,7 +52,7 @@ const register = [
   body('last_name')
     .trim()
     .not().isEmpty().withMessage(vk('ln_req'))
-    .isLength({ max: 64 }).withMessage(vk('ln_long')),
+    .isLength({ max: 64 }).withMessage(vk('ln_long'))
 ];
 
 const register2 = validateTotpToken('token', 'secret');
