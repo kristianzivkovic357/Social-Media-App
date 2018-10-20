@@ -166,14 +166,17 @@ async function accessToken (req, res, next) {
       return;
     }
 
+    let networkId;
+    let accessToken;
+
     if (req.body.network) {
-      const networkId = enums.SocialNetwork[req.body.network];
-      const accessToken = await tokenService[req.body.network](req.body.code);
+      networkId = enums.SocialNetwork[req.body.network];
+      accessToken = await tokenService[req.body.network](req.body.code);
     } else {
-      const networkId = enums.SocialNetwork['LINKEDIN'];
-      const accessToken = await tokenService['LINKEDIN'](req.query.code)
+      networkId = enums.SocialNetwork['LINKEDIN'];
+      accessToken = await tokenService['LINKEDIN'](req.query.code)
     }
-    
+
     console.log(accessToken); // return : async function instead of value !
     if (!accessToken) {
       throw new Error();
