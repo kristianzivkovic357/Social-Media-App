@@ -17,7 +17,7 @@ router.use(session);
 
 const baseUrl = '/api/v1';
 
-router.get(`${baseUrl}/users/me`, h.sendCsurfHeader, authc.service, userRoutes.me);
+router.get(`${baseUrl}/users/me`, authc.service, userRoutes.me);
 router.post(`${baseUrl}/users/register`, val.users.register, userRoutes.register);
 router.post(`${baseUrl}/users/login`, val.users.login, userRoutes.login);
 router.post(`${baseUrl}/users/logout`, userRoutes.logout);
