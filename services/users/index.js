@@ -23,11 +23,22 @@ module.exports = {
   sendTotpResetEmail,
   createNewToken,
   getPosts,
-  getSleeves
+  getSleeves,
+  getUser
 };
 
 const sessionProperties = ['id', 'email'];
 const {EMAIL_SECRET, WEB_APP_BASE_URL, PASS_CHANGE_PATH, TOTP_CHANGE_PATH} = process.env;
+
+async function getUser (id, attributes = undefined) {
+  const user = await db.User.findOne({
+    where: {
+      id: id
+    },
+    attributes: attributes
+  });
+  return user && user.dataValues;
+}
 
 async function register (request, password) {
   try {
