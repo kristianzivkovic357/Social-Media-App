@@ -145,6 +145,10 @@ const getPosts = [
   idParamValidation()
 ];
 
+const getSleeves = [
+  idParamValidation()
+];
+
 module.exports = {
   register,
   login,
@@ -157,5 +161,6 @@ module.exports = {
   validateTotpToken,
   totpChangeForgotten,
   accessKey,
-  getPosts
+  getPosts,
+  getSleeves
 };

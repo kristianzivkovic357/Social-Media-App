@@ -22,7 +22,8 @@ module.exports = {
   initTotpChange,
   sendTotpResetEmail,
   createNewToken,
-  getPosts
+  getPosts,
+  getSleeves
 };
 
 const sessionProperties = ['id', 'email'];
@@ -273,4 +274,20 @@ async function getPosts (userId, networkName) {
   });
 
   return posts;
+}
+
+async function getSleeves (userId) {
+  const accessTokens = await db.AccessToken.findAll({
+    where: {
+      user_id: userId
+    },
+    include: [{
+      model: db.SocialNetwork,
+      required: true,
+      attributes: ['id', 'name']
+    }],
+    attributes: ['id', 'created_at']
+  });
+
+  return accessTokens;
 }

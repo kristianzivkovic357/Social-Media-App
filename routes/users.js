@@ -22,7 +22,8 @@ module.exports = {
   changeTotpForgotten,
   me,
   accessToken,
-  getPosts
+  getPosts,
+  getSleeves
 };
 
 async function register (req, res, next) {
@@ -202,6 +203,18 @@ async function getPosts (req, res, next) {
     const posts = await usersService.getPosts(userId, networkName);
 
     res.send(Response.success(posts)).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getSleeves (req, res, next) {
+  try {
+    const userId = req.params.id;
+
+    const sleeves = await usersService.getSleeves(userId);
+
+    res.send(Response.success(sleeves)).end();
   } catch (err) {
     next(err);
   }
