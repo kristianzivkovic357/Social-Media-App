@@ -175,7 +175,7 @@ async function accessToken (req, res, next) {
       accessToken = await tokenService[req.body.network](req.body.code);
     } else {
       networkId = enums.SocialNetwork['LINKEDIN'];
-      accessToken = await tokenService['LINKEDIN'](req.query.code)
+      accessToken = await tokenService['LINKEDIN'](req.query.code);
     }
 
     console.log(accessToken); // return : async function instead of value !
