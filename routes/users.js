@@ -174,6 +174,9 @@ async function accessToken (req, res, next) {
     if (req.body.network) {
       networkId = enums.SocialNetwork[req.body.network];
       accessToken = await tokenService[req.body.network](req.body.code);
+    } else if (req.params.network === 'facebook') {
+      networkId = enums.SocialNetwork['FACEBOOK'];
+      accessToken = await tokenService['FACEBOOK'](req.query.code);
     } else {
       networkId = enums.SocialNetwork['LINKEDIN'];
       accessToken = await tokenService['LINKEDIN'](req.query.code);

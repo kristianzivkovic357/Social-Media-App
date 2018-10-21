@@ -1,7 +1,9 @@
 const instagram = require('./instagram');
 const linkedin = require('./linkedin');
+const facebook = require('./facebook');
 
 module.exports = {
   'INSTAGRAM': instagram,
-  'LINKEDIN': linkedin
+  'LINKEDIN': linkedin,
+  'FACEBOOK': facebook
 };
