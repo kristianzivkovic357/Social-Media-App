@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     access_token: {
-      type: DataTypes.STRING(256),
+      type: DataTypes.STRING(512),
       allowNull: false
     }
 
