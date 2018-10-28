@@ -145,7 +145,7 @@ async function me (req, res, next) {
     return;
   }
 
-  const userObject = await usersService.getUser(user.id, ['email_confirmed']);
+  const userObject = await usersService.getUser(user.id, ['email_confirmed', 'first_name', 'last_name']);
 
   if (!userObject) {
     next(new AuthenticationError());
@@ -155,7 +155,9 @@ async function me (req, res, next) {
   res.status(200).send(Response.success({
     id: user.id,
     email: user.email,
-    email_confirmed: userObject.email_confirmed
+    email_confirmed: userObject.email_confirmed,
+    first_name: userObject.first_name,
+    last_name: userObject.last_name
   })).end();
 }
 
