@@ -32,7 +32,14 @@ async function register (req, res, next) {
       'email', 'first_name', 'last_name'
     ], req.body);
 
-    await usersService.register(request, req.body.password);
+    const user = await usersService.register(request, req.body.password);
+
+    if (user) {
+      authc.setAuthenticated(req, user);
+      res.end();
+    } else {
+      next(new AuthenticationError());
+    }
 
     res.status(201).end();
   } catch (err) {
