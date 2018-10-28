@@ -42,7 +42,7 @@ async function getUser (id, attributes = undefined) {
 
 async function register (request, password) {
   try {
-    await db.sequelize.transaction(async t => {
+    const user = await db.sequelize.transaction(async t => {
       const User = await db.User.create(request, {transaction: t});
 
       if (!User) {
@@ -58,6 +58,7 @@ async function register (request, password) {
 
       return User;
     });
+    return getSessionProperties(user.dataValues)
   } catch (err) {
     throw err;
   }
