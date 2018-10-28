@@ -697,6 +697,7 @@ module.exports = {
     hashtag_name_req: 'hashtag name is required',
     hashtag_long: 'hashtag name is too long',
     user_req: 'user id is required',
-    day_req: 'day is required'
+    day_req: 'day is required',
+    answer_req: 'Answer is require'
   }
 };

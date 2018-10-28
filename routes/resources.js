@@ -3,6 +3,7 @@
 const Response = require('../utils/response');
 const path = require('path');
 const utilService = require('../services/resources');
+const resourceService = require('../services/resources');
 
 const DEFAULT_LANGUAGE = process.env.DEFAULT_LANGUAGE;
 const cache = {};
@@ -10,7 +11,8 @@ const cache = {};
 module.exports = {
   getResources,
   getTickers,
-  getCurrencyList
+  getCurrencyList,
+  getQuestions
 };
 
 function getResources (req, res, next) {
@@ -57,6 +59,15 @@ async function getCurrencyList (req, res, next) {
   try {
     const data = await utilService.getCurrencyList(res.locals.pagination);
     res.send(Response.success(data)).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getQuestions (req, res, next) {
+  try {
+    const data = await resourceService.getQuestions();
+    res.send(data).end();
   } catch (err) {
     next(err);
   }

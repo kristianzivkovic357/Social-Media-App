@@ -3,6 +3,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const userRoutes = require('./users');
+const resourcenRoutes = require('./resources');
 const h = require('./handlers');
 const val = require('../validators');
 const session = require('./session');
@@ -27,6 +28,11 @@ router.post(`${baseUrl}/users/:id/register_access_token`, authc.service, authc.u
 
 router.get(`${baseUrl}/users/:id/posts`, authc.service, authc.user, val.users.getPosts, userRoutes.getPosts);
 router.get(`${baseUrl}/users/:id/sleeves`, authc.service, authc.user, val.users.getSleeves, userRoutes.getSleeves);
+router.post(`${baseUrl}/users/set_answer`, authc.service, authc.user, val.users.setAnswer, userRoutes.setAnswers);
+router.post(`${baseUrl}/users/get_answer`, /* authc.service, authc.user, */ val.users.userId, userRoutes.getAnswers);
+
+// Resources for front
+router.get(`${baseUrl}/questions`, resourcenRoutes.getQuestions);
 
 router.use(h.error);
 

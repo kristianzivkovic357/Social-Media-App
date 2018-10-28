@@ -23,7 +23,9 @@ module.exports = {
   me,
   accessToken,
   getPosts,
-  getSleeves
+  getSleeves,
+  setAnswers,
+  getAnswers
 };
 
 async function register (req, res, next) {
@@ -227,6 +229,39 @@ async function getSleeves (req, res, next) {
     const sleeves = await usersService.getSleeves(userId);
 
     res.send(Response.success(sleeves)).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function setAnswers (req, res, next) {
+  try {
+    const userId = req.session.id;
+
+    if (!userId) {
+      next(new AuthenticationError());
+      return;
+    }
+
+    const data = utils.getSubset([
+      'question_first_id', 'question_second_id', 'question_third_id', 'question_fourth_id', 'question_fifth_id',
+      'question_first_text', 'question_second_text', 'question_third_text', 'question_fourth_text', 'question_fifth_text'
+    ], req.body);
+
+    await usersService.setAnswers(userId, data);
+    res.status(201).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getAnswers (req, res, next) {
+  try {
+    const userId = req.body.user_id;
+
+    const anwers = await usersService.getAnswers(userId);
+
+    res.send(Response.success(anwers)).end();
   } catch (err) {
     next(err);
   }
