@@ -23,7 +23,7 @@ router.post(`${baseUrl}/users/register`, val.users.register, userRoutes.register
 router.post(`${baseUrl}/users/login`, val.users.login, userRoutes.login);
 router.post(`${baseUrl}/users/logout`, userRoutes.logout);
 
-router.get(`${baseUrl}/users/register_access_token`, authc.service, val.users.accessKey, userRoutes.accessToken);
+router.get(`${baseUrl}/users/:network/register_access_token`, authc.service, val.users.accessKey, userRoutes.accessToken);
 
 router.get(`${baseUrl}/users/:id/posts`, authc.service, authc.user, val.users.getPosts, userRoutes.getPosts);
 router.get(`${baseUrl}/users/:id/sleeves`, authc.service, authc.user, val.users.getSleeves, userRoutes.getSleeves);

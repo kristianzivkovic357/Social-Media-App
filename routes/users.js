@@ -175,6 +175,7 @@ async function me (req, res, next) {
 async function accessToken (req, res, next) {
   try {
     const user = req.session.user;
+    const network = req.params.network;
 
     if (!user) { // just in case
       next(new AuthenticationError());
@@ -184,9 +185,8 @@ async function accessToken (req, res, next) {
     let networkId;
     let accessToken;
 
-    if (tokenService[req.query.network]) {
-      networkId = enums.SocialNetwork[req.query.network];
-      accessToken = await tokenService[req.query.network](req.query.code);
+    if (tokenService[network]) {
+      accessToken = await tokenService[network](req.query.code);
     } else {
       res.status(400).end();
       return;
@@ -198,7 +198,9 @@ async function accessToken (req, res, next) {
       throw new Error();
     }
 
+    networkId = enums.SocialNetwork[network];
     const ok = usersService.createNewToken(accessToken, req.session.user.id, networkId);
+
     if (!ok) {
       throw new Error();
     }

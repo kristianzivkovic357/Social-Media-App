@@ -136,8 +136,8 @@ const totpChangeForgotten = [
 const accessKey = [
   query('code')
     .not().isEmpty().withMessage(vk('code_req')),
-  query('network')
-    .not().isEmpty().withMessage(vk('pass_req'))
+  param('network')
+    .not().isEmpty().withMessage(vk('network_req'))
     .custom(custom.checkNetwork)
 ];
 
