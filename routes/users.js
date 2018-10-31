@@ -25,7 +25,9 @@ module.exports = {
   me,
   accessToken,
   getPosts,
-  getSleeves
+  getSleeves,
+  setAnswers,
+  getAnswers
 };
 
 async function register (req, res, next) {
@@ -34,7 +36,14 @@ async function register (req, res, next) {
       'email', 'first_name', 'last_name'
     ], req.body);
 
-    await usersService.register(request, req.body.password);
+    const user = await usersService.register(request, req.body.password);
+
+    if (user) {
+      authc.setAuthenticated(req, user);
+      res.end();
+    } else {
+      next(new AuthenticationError());
+    }
 
     res.status(201).end();
   } catch (err) {
@@ -147,7 +156,7 @@ async function me (req, res, next) {
     return;
   }
 
-  const userObject = await usersService.getUser(user.id, ['email_confirmed']);
+  const userObject = await usersService.getUser(user.id, ['email_confirmed', 'first_name', 'last_name']);
 
   if (!userObject) {
     next(new AuthenticationError());
@@ -157,7 +166,9 @@ async function me (req, res, next) {
   res.status(200).send(Response.success({
     id: user.id,
     email: user.email,
-    email_confirmed: userObject.email_confirmed
+    email_confirmed: userObject.email_confirmed,
+    first_name: userObject.first_name,
+    last_name: userObject.last_name
   })).end();
 }
 
@@ -218,6 +229,39 @@ async function getSleeves (req, res, next) {
     const sleeves = await usersService.getSleeves(userId);
 
     res.send(Response.success(sleeves)).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function setAnswers (req, res, next) {
+  try {
+    const userId = req.session.id;
+
+    if (!userId) {
+      next(new AuthenticationError());
+      return;
+    }
+
+    const data = utils.getSubset([
+      'question_first_id', 'question_second_id', 'question_third_id', 'question_fourth_id', 'question_fifth_id',
+      'question_first_text', 'question_second_text', 'question_third_text', 'question_fourth_text', 'question_fifth_text'
+    ], req.body);
+
+    await usersService.setAnswers(userId, data);
+    res.status(201).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getAnswers (req, res, next) {
+  try {
+    const userId = req.body.user_id;
+
+    const anwers = await usersService.getAnswers(userId);
+
+    res.send(Response.success(anwers)).end();
   } catch (err) {
     next(err);
   }

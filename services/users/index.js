@@ -10,6 +10,7 @@ const config = require('../../config');
 const url = require('url');
 const querystring = require('querystring');
 const enums = require('../../utils/enums');
+const dataMapper = require('./dataMapper');
 
 module.exports = {
   register,
@@ -24,7 +25,9 @@ module.exports = {
   createNewToken,
   getPosts,
   getSleeves,
-  getUser
+  getUser,
+  setAnswers,
+  getAnswers
 };
 
 const sessionProperties = ['id', 'email'];
@@ -42,7 +45,7 @@ async function getUser (id, attributes = undefined) {
 
 async function register (request, password) {
   try {
-    await db.sequelize.transaction(async t => {
+    const user = await db.sequelize.transaction(async t => {
       const User = await db.User.create(request, {transaction: t});
 
       if (!User) {
@@ -58,6 +61,7 @@ async function register (request, password) {
 
       return User;
     });
+    return getSessionProperties(user.dataValues)
   } catch (err) {
     throw err;
   }
@@ -301,4 +305,30 @@ async function getSleeves (userId) {
   });
 
   return accessTokens;
+}
+
+async function setAnswers (userId, data) {
+  await setAnswer(userId, data.question_first_id, data.question_first_text);
+  await setAnswer(userId, data.question_second_id, data.question_second_text);
+  await setAnswer(userId, data.question_third_id, data.question_third_text);
+  await setAnswer(userId, data.question_fourth_id, data.question_fourth_text);
+  await setAnswer(userId, data.question_fifth_id, data.question_fifth_text);
+}
+
+async function setAnswer (userId, questionId, answer) {
+  await db.Answer.create({answer: answer, question_id: questionId, user_id: userId});
+}
+
+async function getAnswers (userId, attributes = undefined) {
+  const answers = await db.Answer.findAll({
+    where: {
+      user_id: userId
+    },
+    include: [{
+      model: db.Question,
+      require: true
+    }]
+  });
+
+  return answers && dataMapper.mapAnswerAndQuestion(answers);
 }

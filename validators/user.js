@@ -149,6 +149,35 @@ const getSleeves = [
   idParamValidation()
 ];
 
+const setAnswer = [
+  body('question_first_id')
+    .not().isEmpty().withMessage(),
+  body('question_second_id')
+    .not().isEmpty().withMessage(),
+  body('question_third_id')
+    .not().isEmpty().withMessage(),
+  body('question_fourth_id')
+    .not().isEmpty().withMessage(),
+  body('question_fifth_id')
+    .not().isEmpty().withMessage(),
+  body('question_first_text')
+    .not().isEmpty().withMessage(vk('answer_req')),
+  body('question_second_text')
+    .not().isEmpty().withMessage(vk('answer_req')),
+  body('question_third_text')
+    .not().isEmpty().withMessage(vk('answer_req')),
+  body('question_fourth_text')
+    .not().isEmpty().withMessage(vk('answer_req')),
+  body('question_fifth_text')
+    .not().isEmpty().withMessage(vk('answer_req'))
+];
+
+const userId = [
+  body('user_id')
+    .not().isEmpty().withMessage()
+    .isInt([ {min: 1} ]).withMessage(vk('num'))
+]
+
 module.exports = {
   register,
   login,
@@ -162,5 +191,7 @@ module.exports = {
   totpChangeForgotten,
   accessKey,
   getPosts,
-  getSleeves
+  getSleeves,
+  setAnswer,
+  userId
 };
