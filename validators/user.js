@@ -1,6 +1,6 @@
 'use strict';
 
-const { body, param } = require('express-validator/check');
+const { body, param, query } = require('express-validator/check');
 const custom = require('./custom');
 const { vk } = require('../resources');
 
@@ -134,9 +134,9 @@ const totpChangeForgotten = [
 ];
 
 const accessKey = [
-  body('code')
+  query('code')
     .not().isEmpty().withMessage(vk('code_req')),
-  body('network')
+  query('network')
     .not().isEmpty().withMessage(vk('pass_req'))
     .custom(custom.checkNetwork)
 ];

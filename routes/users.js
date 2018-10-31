@@ -9,6 +9,8 @@ const authService = require('../services/auth');
 const tokenService = require('../services/access_token');
 const enums = require('../utils/enums');
 
+const { WEBAPP_BASE_URL } = process.env;
+
 module.exports = {
   register,
   login,
@@ -171,16 +173,17 @@ async function accessToken (req, res, next) {
     let networkId;
     let accessToken;
 
-    if (req.body.network) {
-      networkId = enums.SocialNetwork[req.body.network];
-      accessToken = await tokenService[req.body.network](req.body.code);
+    if (tokenService[req.query.network]) {
+      networkId = enums.SocialNetwork[req.query.network];
+      accessToken = await tokenService[req.query.network](req.query.code);
     } else {
-      networkId = enums.SocialNetwork['LINKEDIN'];
-      accessToken = await tokenService['LINKEDIN'](req.query.code);
+      res.status(400).end();
+      return;
     }
 
     console.log(accessToken); // return : async function instead of value !
     if (!accessToken) {
+      res.status(410).end();
       throw new Error();
     }
 
@@ -189,9 +192,9 @@ async function accessToken (req, res, next) {
       throw new Error();
     }
 
-    res.status(201).end();
+    res.redirect(WEBAPP_BASE_URL);
   } catch (err) {
-    next(err);
+    res.status(400).end();
   }
 }
 

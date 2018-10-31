@@ -3,12 +3,14 @@
 const querystring = require('querystring');
 const axios = require('axios');
 
+const { WEBAPP_BASE_URL } = process.env;
+
 module.exports = getAccessToken;
 
 async function getAccessToken (code) {
   try {
     const response = await axios.post('https://api.instagram.com/oauth/access_token', querystring.stringify({
-      redirect_uri: 'http://173.249.46.156/',
+      redirect_uri: WEBAPP_BASE_URL,
       code: code,
       grant_type: 'authorization_code',
       client_id: '5df48e0684bc4e349f2f093cd9cf953c',
