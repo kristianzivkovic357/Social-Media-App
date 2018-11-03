@@ -9,6 +9,8 @@ const authService = require('../services/auth');
 const tokenService = require('../services/access_token');
 const enums = require('../utils/enums');
 
+const { WEBAPP_BASE_URL } = process.env;
+
 module.exports = {
   register,
   login,
@@ -174,6 +176,7 @@ async function me (req, res, next) {
 async function accessToken (req, res, next) {
   try {
     const user = req.session.user;
+    const network = req.params.network;
 
     if (!user) { // just in case
       next(new AuthenticationError());
@@ -183,30 +186,29 @@ async function accessToken (req, res, next) {
     let networkId;
     let accessToken;
 
-    if (req.body.network) {
-      networkId = enums.SocialNetwork[req.body.network];
-      accessToken = await tokenService[req.body.network](req.body.code);
-    } else if (req.params.network === 'facebook') {
-      networkId = enums.SocialNetwork['FACEBOOK'];
-      accessToken = await tokenService['FACEBOOK'](req.query.code);
+    if (tokenService[network]) {
+      accessToken = await tokenService[network](req.query.code);
     } else {
-      networkId = enums.SocialNetwork['LINKEDIN'];
-      accessToken = await tokenService['LINKEDIN'](req.query.code);
+      res.status(400).end();
+      return;
     }
 
     console.log(accessToken); // return : async function instead of value !
     if (!accessToken) {
+      res.status(410).end();
       throw new Error();
     }
 
+    networkId = enums.SocialNetwork[network];
     const ok = usersService.createNewToken(accessToken, req.session.user.id, networkId);
+
     if (!ok) {
       throw new Error();
     }
 
-    res.status(201).end();
+    res.redirect(WEBAPP_BASE_URL);
   } catch (err) {
-    next(err);
+    res.status(400).end();
   }
 }
 

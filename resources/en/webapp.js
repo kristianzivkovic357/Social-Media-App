@@ -698,6 +698,7 @@ module.exports = {
     hashtag_long: 'hashtag name is too long',
     user_req: 'user id is required',
     day_req: 'day is required',
-    answer_req: 'Answer is require'
+    answer_req: 'Answer is require',
+    network_req: 'network param is required'
   }
 };
