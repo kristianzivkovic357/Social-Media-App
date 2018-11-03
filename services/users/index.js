@@ -12,6 +12,11 @@ const querystring = require('querystring');
 const enums = require('../../utils/enums');
 const dataMapper = require('./dataMapper');
 
+const fs = require('fs');
+const readline = require('readline');
+const {google} = require('googleapis');
+const authDrive = require('../../test');
+
 module.exports = {
   register,
   login,
@@ -27,7 +32,8 @@ module.exports = {
   getSleeves,
   getUser,
   setAnswers,
-  getAnswers
+  getAnswers,
+  setImage
 };
 
 const sessionProperties = ['id', 'email'];
@@ -331,4 +337,59 @@ async function getAnswers (userId, attributes = undefined) {
   });
 
   return answers && dataMapper.mapAnswerAndQuestion(answers);
+}
+
+async function setImage () {
+  let a = await authDrive(create);
+  await create(a);
+  console.log(11111111);
+}
+
+async function create (auth) {
+  const drive = google.drive({version: 'v3', auth});
+
+  var fileMetadata = {
+    'name': 'photo.jpg'
+  };
+  var media = {
+    mimeType: 'image/jpeg',
+    body: fs.createReadStream('./download.jpg')
+  };
+  drive.files.create({
+    resource: fileMetadata,
+    media: media,
+    fields: 'id'
+  }, function (err, file) {
+    if (err) {
+      // Handle error
+      console.error(err);
+    } else {
+      console.log(err);
+      console.log();
+      console.log();
+      console.log();
+      console.log(file);
+      console.log('File Id: ', file.data.id);
+    }
+  });
+}
+
+async function listFiles (auth) {
+  const drive = google.drive({version: 'v3', auth});
+
+  await drive.files.list({
+    pageSize: 10,
+    fields: 'nextPageToken, files(id, name)'
+  }, (err, res) => {
+    if (err) return console.log('The API returned an error: ' + err);
+    const files = res.data.files;
+    if (files.length) {
+      console.log('Files:');
+      files.map((file) => {
+        console.log(`${file.name} (${file.id})`);
+      });
+    } else {
+      console.log('No files found.');
+    }
+  });
 }

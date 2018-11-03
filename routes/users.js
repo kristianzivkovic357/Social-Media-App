@@ -25,7 +25,8 @@ module.exports = {
   getPosts,
   getSleeves,
   setAnswers,
-  getAnswers
+  getAnswers,
+  setImage
 };
 
 async function register (req, res, next) {
@@ -262,6 +263,19 @@ async function getAnswers (req, res, next) {
     const anwers = await usersService.getAnswers(userId);
 
     res.send(Response.success(anwers)).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function setImage (req, res, next) {
+  try {
+    // const userId = req.body.user_id;
+    // const userId = req.body.user_id;
+
+    await usersService.setImage();
+
+    res.send({a: 22}).end();
   } catch (err) {
     next(err);
   }

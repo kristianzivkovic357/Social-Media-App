@@ -30,6 +30,7 @@ router.get(`${baseUrl}/users/:id/posts`, authc.service, authc.user, val.users.ge
 router.get(`${baseUrl}/users/:id/sleeves`, authc.service, authc.user, val.users.getSleeves, userRoutes.getSleeves);
 router.post(`${baseUrl}/users/set_answer`, authc.service, authc.user, val.users.setAnswer, userRoutes.setAnswers);
 router.post(`${baseUrl}/users/get_answer`, /* authc.service, authc.user, */ val.users.userId, userRoutes.getAnswers);
+router.post(`${baseUrl}/users/image`, /* authc.service, authc.user, */ userRoutes.setImage);
 
 // Resources for front
 router.get(`${baseUrl}/questions`, resourcenRoutes.getQuestions);
