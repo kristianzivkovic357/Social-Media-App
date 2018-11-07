@@ -1,7 +1,8 @@
 'use strict';
 
 module.exports = {
-  mapAnswerAndQuestion
+  mapAnswerAndQuestion,
+  mapFile
 };
 
 function mapAnswerAndQuestion (dataObj) {
@@ -13,6 +14,13 @@ function mapAnswerAndQuestion (dataObj) {
     delete element.dataValues.updated_at;
     element.dataValues.question = element.dataValues.Question.question;
     delete element.dataValues.Question;
+  });
+  return dataObj;
+}
+
+function mapFile (dataObj) {
+  dataObj.forEach(element => {
+    element = element.dataValues.file_id;
   });
   return dataObj;
 }

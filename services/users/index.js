@@ -30,7 +30,8 @@ module.exports = {
   getUser,
   setAnswers,
   getAnswers,
-  setImage
+  setImage,
+  getImages
 };
 
 const sessionProperties = ['id', 'email'];
@@ -346,6 +347,17 @@ async function setImage (userId, buffers) {
     const fileId = await drive.create(auth, bufferStream);
     setFile(userId, fileId);
   }
+}
+
+async function getImages (userId) {
+  const files = await db.File.findAll({
+    row: true,
+    where: {
+      user_id: userId
+    },
+    attributes: ['file_id']
+  });
+  return dataMapper.mapFile(files);
 }
 
 async function setFile (userId, fileId) {

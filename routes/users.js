@@ -28,7 +28,8 @@ module.exports = {
   getSleeves,
   setAnswers,
   getAnswers,
-  setImage
+  setImage,
+  getImage
 };
 
 async function register (req, res, next) {
@@ -275,6 +276,16 @@ async function setImage (req, res, next) {
     const userId = req.session.id;
     await usersService.setImage(userId, req.files);
     res.send().end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getImage (req, res, next) {
+  try {
+    const userId = req.params.id;
+    const files = await usersService.getImages(1);
+    res.send(files).end();
   } catch (err) {
     next(err);
   }
