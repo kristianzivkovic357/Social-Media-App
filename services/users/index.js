@@ -11,11 +11,8 @@ const url = require('url');
 const querystring = require('querystring');
 const enums = require('../../utils/enums');
 const dataMapper = require('./dataMapper');
-
-const fs = require('fs');
-const readline = require('readline');
-const {google} = require('googleapis');
-const authDrive = require('../../test');
+var stream = require('stream');
+const drive = require('../drive');
 
 module.exports = {
   register,
@@ -67,7 +64,7 @@ async function register (request, password) {
 
       return User;
     });
-    return getSessionProperties(user.dataValues)
+    return getSessionProperties(user.dataValues);
   } catch (err) {
     throw err;
   }
@@ -339,57 +336,18 @@ async function getAnswers (userId, attributes = undefined) {
   return answers && dataMapper.mapAnswerAndQuestion(answers);
 }
 
-async function setImage () {
-  let a = await authDrive(create);
-  await create(a);
-  console.log(11111111);
+async function setImage (userId, buffers) {
+  let auth = await drive.authDrive(drive.create);
+
+  for (let i in buffers) {
+    const bufferStream = new stream.PassThrough();
+    bufferStream.end(buffers[i].buffer);
+
+    const fileId = await drive.create(auth, bufferStream);
+    setFile(userId, fileId);
+  }
 }
 
-async function create (auth) {
-  const drive = google.drive({version: 'v3', auth});
-
-  var fileMetadata = {
-    'name': 'photo.jpg'
-  };
-  var media = {
-    mimeType: 'image/jpeg',
-    body: fs.createReadStream('./download.jpg')
-  };
-  drive.files.create({
-    resource: fileMetadata,
-    media: media,
-    fields: 'id'
-  }, function (err, file) {
-    if (err) {
-      // Handle error
-      console.error(err);
-    } else {
-      console.log(err);
-      console.log();
-      console.log();
-      console.log();
-      console.log(file);
-      console.log('File Id: ', file.data.id);
-    }
-  });
-}
-
-async function listFiles (auth) {
-  const drive = google.drive({version: 'v3', auth});
-
-  await drive.files.list({
-    pageSize: 10,
-    fields: 'nextPageToken, files(id, name)'
-  }, (err, res) => {
-    if (err) return console.log('The API returned an error: ' + err);
-    const files = res.data.files;
-    if (files.length) {
-      console.log('Files:');
-      files.map((file) => {
-        console.log(`${file.name} (${file.id})`);
-      });
-    } else {
-      console.log('No files found.');
-    }
-  });
+async function setFile (userId, fileId) {
+  await db.File.create({ user_id: userId, file_id: fileId });
 }

@@ -272,12 +272,9 @@ async function getAnswers (req, res, next) {
 
 async function setImage (req, res, next) {
   try {
-    // const userId = req.body.user_id;
-    // const userId = req.body.user_id;
-
-    await usersService.setImage();
-
-    res.send({a: 22}).end();
+    const userId = req.session.id;
+    await usersService.setImage(userId, req.files);
+    res.send().end();
   } catch (err) {
     next(err);
   }
