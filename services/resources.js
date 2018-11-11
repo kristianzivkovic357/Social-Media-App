@@ -7,7 +7,7 @@ module.exports = {
 };
 
 async function getQuestions () {
-  const questions = await db.Question.findOne({
+  const questions = await db.Question.findAll({
     attributes: ['id', 'question']
   });
   return questions;

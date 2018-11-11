@@ -50,7 +50,7 @@ async function checkWalletNotExist (userId, {req}) {
   }
 
   const walletAlreadyExists = await userServices.getWallet(userId, req.params.exchangeId);
-  console.log(walletAlreadyExists);
+
   if (walletAlreadyExists) {
     throw new Error();
   }

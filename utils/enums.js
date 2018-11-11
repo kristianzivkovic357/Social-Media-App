@@ -5,5 +5,10 @@ module.exports = {
     FACEBOOK: 2,
     TWITTER: 3,
     LINKEDIN: 4
+  },
+  Role: {
+    CREATOR: 1,
+    ADMIN: 2,
+    USER: 3
   }
 };

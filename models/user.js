@@ -27,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
+    },
+    role_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false,
+      defaultValue: 3
     }
   }, {
     underscored: true,
@@ -40,7 +45,9 @@ module.exports = (sequelize, DataTypes) => {
     models.User.hasOne(models.UserAuth, { foreignKey: { allowNull: false } });
     models.User.hasMany(models.AccessToken, { foreignKey: { allowNull: false } });
     models.User.hasOne(models.Answer, { foreignKey: { allowNull: false } });
+    models.User.hasOne(models.Role, { foreignKey: { allowNull: false } });
     models.User.hasMany(models.File);
+    models.User.hasMany(models.RoleBook, { foreignKey: { allowNull: false } });
   };
 
   return User;

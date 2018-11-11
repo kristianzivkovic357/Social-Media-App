@@ -31,10 +31,11 @@ module.exports = {
   setAnswers,
   getAnswers,
   setImage,
-  getImages
+  getImages,
+  setAdmin
 };
 
-const sessionProperties = ['id', 'email'];
+const sessionProperties = ['id', 'email', 'role_id'];
 const {EMAIL_SECRET, WEB_APP_BASE_URL, PASS_CHANGE_PATH, TOTP_CHANGE_PATH} = process.env;
 
 async function getUser (id, attributes = undefined) {
@@ -292,7 +293,7 @@ async function getPosts (userId, networkName) {
     where: query
   });
 
-  return posts;
+  return dataMapper.mapPosts(posts.rows);
 }
 
 async function getSleeves (userId) {
@@ -362,4 +363,16 @@ async function getImages (userId) {
 
 async function setFile (userId, fileId) {
   await db.File.create({ user_id: userId, file_id: fileId });
+}
+
+async function setAdmin (userId) {
+  const user = await db.User.findOne({
+    where: {
+      id: userId
+    }
+  });
+
+  await user.update({
+    role_id: 2
+  });
 }

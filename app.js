@@ -6,12 +6,14 @@ const http = require('http');
 const express = require('express');
 const routes = require('./routes');
 const logger = require('./utils/logger');
+const morgan = require('morgan');
 
 const { PORT } = process.env;
 
 const app = express();
 const multer = require('multer');
 app.use(multer().any());
+app.use(morgan('dev'));
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');

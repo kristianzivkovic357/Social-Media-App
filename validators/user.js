@@ -145,6 +145,10 @@ const getPosts = [
   idParamValidation()
 ];
 
+const getImages = [
+  idParamValidation()
+];
+
 const getSleeves = [
   idParamValidation()
 ];
@@ -193,5 +197,6 @@ module.exports = {
   getPosts,
   getSleeves,
   setAnswer,
-  userId
+  userId,
+  getImages
 };

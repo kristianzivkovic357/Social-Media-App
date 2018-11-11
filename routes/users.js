@@ -2,11 +2,12 @@
 
 const utils = require('../utils/utils');
 const usersService = require('../services/users');
-const { AuthenticationError } = require('../utils/errors');
+const { AuthenticationError, AuthorizationError } = require('../utils/errors');
 const authc = require('./authc');
 const Response = require('../utils/response');
 const authService = require('../services/auth');
 const tokenService = require('../services/access_token');
+const roleBookService = require('../services/role_book');
 const enums = require('../utils/enums');
 
 const { WEBAPP_BASE_URL } = process.env;
@@ -29,7 +30,10 @@ module.exports = {
   setAnswers,
   getAnswers,
   setImage,
-  getImage
+  getImage,
+  setAdmin,
+  getUserImages,
+  getUserPosts
 };
 
 async function register (req, res, next) {
@@ -86,7 +90,6 @@ async function setUserAccountBalance (req, res, next) {
     await usersService.setUserAccountBalance(req.params.id);
     res.status(200).end();
   } catch (err) {
-    console.log(err);
     next(new AuthenticationError(err));
   }
 }
@@ -283,9 +286,52 @@ async function setImage (req, res, next) {
 
 async function getImage (req, res, next) {
   try {
-    const userId = req.params.id;
-    const files = await usersService.getImages(1);
+    const userId = req.session.id;
+    const files = await usersService.getImages(userId);
     res.send(files).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function setAdmin (req, res, next) {
+  try {
+    const userId = req.body.user_id;
+    await usersService.setAdmin(userId);
+    res.status(201).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getUserImages (req, res, next) {
+  try {
+    const userId = req.params.id;
+    const files = await usersService.getImages(userId);
+    res.send(files).end();
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getUserPosts (req, res, next) {
+  try {
+    const userId = req.params.id;
+    const role = req.session.user.role_id;
+    const adminId = req.session.user.id;
+    const networkName = req.query.networkName;
+
+    if (role !== 3) {
+      const hasRole = await roleBookService.hasRole(userId, adminId);
+
+      if (!hasRole) {
+        throw new AuthorizationError();
+      }
+    }
+
+    const posts = await usersService.getPosts(userId, networkName);
+
+    res.send(posts).end();
   } catch (err) {
     next(err);
   }
